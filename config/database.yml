@@ -18,7 +18,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres # PostgreSQLのデフォルトユーザー
   password: Koukih110615 # インストール時に設定したパスワード
-  host: localhost
+  host: db3
   port: 5432
 
 development:
