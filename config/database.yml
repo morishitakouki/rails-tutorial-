@@ -15,15 +15,16 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  database: "<%= ENV.fetch("POSTGRES_DB") { "ecommerce" } %>"
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: postgres # PostgreSQLのデフォルトユーザー
   password: Koukih110615 # インストール時に設定したパスワード
-  host: db3
+  host: db
   port: 5432
 
 development:
   <<: *default
-  database: sample_app_development
+  database: <%= ENV.fetch("POSTGRES_DB") { "ecommerce" } %>_development
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -57,7 +58,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: sample_app_test
+  database: <%= ENV.fetch("POSTGRES_DB") { "ecommerce" } %>_test
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -81,6 +83,6 @@ test:
 #
 production:
   <<: *default
-  database: sample_app_production
+  database: <%= ENV.fetch("POSTGRES_DB") { "ecommerce" } %>_production
   username: sample_app
   password: <%= ENV["SAMPLE_APP_DATABASE_PASSWORD"] %>
