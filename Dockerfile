@@ -1,14 +1,30 @@
 FROM ruby:3.4.1
-RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+
+# Install system dependencies in a single layer
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+        nodejs \
+        postgresql-client \
+        build-essential \
+        libpq-dev \
+        vim && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /myproject
 
-ADD Gemfile /myproject/Gemfile
-ADD Gemfile.lock /myproject/Gemfile.lock
+# Install Ruby dependencies first (better layer caching)
+COPY Gemfile Gemfile.lock ./
+RUN gem install bundler && \
+    bundle install
 
-RUN gem install bundler
-RUN bundle install
+# Copy application code last
+COPY . .
 
-ADD . /myproject
+# Optional: Create non-root user for security
+RUN groupadd -r myapp && useradd -r -g myapp myapp
+RUN chown -R myapp:myapp /myproject
+USER myapp
+
+EXPOSE 3000
+
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

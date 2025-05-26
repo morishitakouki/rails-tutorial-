@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  root 'staticpages#top'
+  root "staticpages#top"
 end
