@@ -20,9 +20,13 @@ RUN gem install bundler && \
 # Copy application code last
 COPY . .
 
-# Optional: Create non-root user for security
-RUN groupadd -r myapp && useradd -r -g myapp myapp
+# Create non-root user with proper HOME directory
+RUN groupadd -r myapp && useradd -r -g myapp -m -d /home/myapp myapp
 RUN chown -R myapp:myapp /myproject
+
+# Set HOME environment variable
+ENV HOME=/home/myapp
+
 USER myapp
 
 EXPOSE 3000
